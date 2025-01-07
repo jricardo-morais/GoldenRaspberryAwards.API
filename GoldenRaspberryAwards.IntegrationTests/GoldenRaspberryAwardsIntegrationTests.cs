@@ -108,18 +108,5 @@ namespace GoldenRaspberryAwards.IntegrationTests
             result?.Max.Should().Contain(p => p.Producer == "Matthew Vaughn" && p.Interval == 13);
         }
 
-        private byte[] LoadEmbeddedResource(string resourceName)
-        {
-            var assembly = Assembly.GetExecutingAssembly();
-            using var stream = assembly.GetManifestResourceStream(resourceName);
-            if (stream == null)
-            {
-                throw new FileNotFoundException($"Resource not found: {resourceName}");
-            }
-
-            using var memoryStream = new MemoryStream();
-            stream.CopyTo(memoryStream);
-            return memoryStream.ToArray();
-        }
     }
 }
