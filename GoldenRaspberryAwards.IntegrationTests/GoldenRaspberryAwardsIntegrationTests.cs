@@ -2,6 +2,7 @@ using FluentAssertions;
 using GoldenRaspberryAwards.Domain.Entities;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Reflection;
 using System.Text;
 
 namespace GoldenRaspberryAwards.IntegrationTests
@@ -59,13 +60,15 @@ namespace GoldenRaspberryAwards.IntegrationTests
         {
             await using var application = new GoldenRaspberryAwardsApplication();
 
-            var url = "api/movies/upload";
+            var url = "api/Movies/Upload";
 
             var client = application.CreateClient();
 
             var fileContent = @"year;title;studios;producers;winner
-                                2001;Movie 1;Studio 1;Producer 1;yes
-                                2010;Movie 2;Studio 2;Producer 2;no";
+                                1999;Movie 1;Studio 1;Producer 1;yes
+                                2000;Movie 2;Studio 2;Producer 2;no
+                                2001;Movie 1;Studio 3;Producer 1;yes
+                                2010;Movie 2;Studio 4;Producer 2;no";
 
             var content = new MultipartFormDataContent();
             var fileContentBytes = Encoding.UTF8.GetBytes(fileContent);
@@ -81,6 +84,42 @@ namespace GoldenRaspberryAwards.IntegrationTests
             var response = await client.PostAsync(url, content);
 
             return response;
+        }
+
+        [Fact]
+        public async Task GetAwardsIntervals_ShouldReturnCorrectIntervals()
+        {
+
+            // Act
+            await using var application = new GoldenRaspberryAwardsApplication();
+            var url = "api/AwardsIntervals/Intervals";
+            var client = application.CreateClient();
+            var response = await client.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+
+            // Assert
+            var result = await response.Content.ReadFromJsonAsync<AwardIntervals>();
+
+            result.Should().NotBeNull();
+            result?.Min.Should().HaveCount(1);
+            result?.Min.Should().Contain(p => p.Producer == "Joel Silver" && p.Interval == 1);
+
+            result?.Max.Should().HaveCount(1);
+            result?.Max.Should().Contain(p => p.Producer == "Matthew Vaughn" && p.Interval == 13);
+        }
+
+        private byte[] LoadEmbeddedResource(string resourceName)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            using var stream = assembly.GetManifestResourceStream(resourceName);
+            if (stream == null)
+            {
+                throw new FileNotFoundException($"Resource not found: {resourceName}");
+            }
+
+            using var memoryStream = new MemoryStream();
+            stream.CopyTo(memoryStream);
+            return memoryStream.ToArray();
         }
     }
 }

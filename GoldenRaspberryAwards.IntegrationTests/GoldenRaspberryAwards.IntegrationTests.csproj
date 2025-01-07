@@ -29,4 +29,10 @@
     <ProjectReference Include="..\GoldenRaspberryAwards.API\GoldenRaspberryAwards.API.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="DataSeed\movieslist.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
