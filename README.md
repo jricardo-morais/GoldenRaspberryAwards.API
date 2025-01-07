@@ -41,5 +41,6 @@ Para executar os testes automatizados do projeto, siga os seguintes passos:
 - **Linguagem**: C#  
 - **Framework**: .NET 9  
 - **Banco de Dados**: SQL Server InMemory
+- **ORM**: EntityFramework Core 9.0 InMemory
 - **Testes**: xUnit  
 - **Upload do Arquivo**: CSVHelper

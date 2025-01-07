@@ -1,7 +1,7 @@
-﻿using GoldenRaspberryAwards.API.Application.Movies;
-using GoldenRaspberryAwards.API.Domain.Entities;
+﻿using GoldenRaspberryAwards.Application.Movies;
+using GoldenRaspberryAwards.Domain.Entities;
 
-namespace GoldenRaspberryAwards.API.Application.Awards;
+namespace GoldenRaspberryAwards.Application.Awards;
 
 public class AwardService : IAwardService
 {
@@ -27,7 +27,7 @@ public class AwardService : IAwardService
     {
         var producerWinners = GetProducerWinners(movies);
 
-        var intervals = producerWinners!.Where(p => p.Value.Count > 1).Select(p => new ProducerAwards
+        var intervals = producerWinners!.Where(p => p.Value.Count >= 2).Select(p => new ProducerAwards
         {
             Producer = p.Key,
             Interval = p.Value[1] - p.Value[0],
@@ -53,8 +53,8 @@ public class AwardService : IAwardService
         var moviesWins = movies.Where(m => m.Winner);
 
         var separators = new string[] { ",", " and ", ", and " };
-        return moviesWins
-            .SelectMany(m => m.Producers!.Split(separators, StringSplitOptions.RemoveEmptyEntries)
+
+        return moviesWins.SelectMany(m => m.Producers!.Split(separators, StringSplitOptions.RemoveEmptyEntries)
             .Select(p => (Producer: p.Trim(), m.Year)))
             .GroupBy(p => p.Producer)
             .ToDictionary(g => g.Key, g => g.Select(p => p.Year).OrderBy(y => y).ToList());

@@ -11,11 +11,16 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
 	<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
 	<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.0" />
-	<InternalsVisibleTo Include="POC.GoldenRaspberryAwards.IntegrationTests" />
+	<InternalsVisibleTo Include="GoldenRaspberryAwards.IntegrationTests" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Data\movieslist.csv">
+	  <ProjectReference Include="..\GoldenRaspberryAwards.Application\GoldenRaspberryAwards.Application.csproj" />
+	  <ProjectReference Include="..\GoldenRaspberryAwards.Domain\GoldenRaspberryAwards.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="DataSeed\movieslist.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

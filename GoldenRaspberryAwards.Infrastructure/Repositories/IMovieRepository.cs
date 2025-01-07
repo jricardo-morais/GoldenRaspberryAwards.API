@@ -1,6 +1,6 @@
-﻿using GoldenRaspberryAwards.API.Domain.Entities;
+﻿using GoldenRaspberryAwards.Domain.Entities;
 
-namespace GoldenRaspberryAwards.API.Data.Repositories;
+namespace GoldenRaspberryAwards.Infrastructure.Repositories;
 
 public interface IMovieRepository
 {
@@ -9,4 +9,5 @@ public interface IMovieRepository
     Task<Movie> Insert(Movie movie);
     Task<Movie> Update(Movie movie);
     Task Delete(Movie movie);
+    Task DeleteAll(List<Movie> movies);
 }

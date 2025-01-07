@@ -1,9 +1,9 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
-using GoldenRaspberryAwards.API.Domain.Entities;
+using GoldenRaspberryAwards.Domain.Entities;
 
-namespace GoldenRaspberryAwards.API.Mappings;
+namespace GoldenRaspberryAwards.Domain.Mappings;
 
 public class MovieMap : ClassMap<Movie>
 {

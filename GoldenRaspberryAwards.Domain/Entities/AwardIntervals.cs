@@ -1,4 +1,4 @@
-﻿namespace GoldenRaspberryAwards.API.Domain.Entities;
+﻿namespace GoldenRaspberryAwards.Domain.Entities;
 
 public class AwardIntervals
 {

@@ -1,4 +1,5 @@
-using GoldenRaspberryAwards.API.Domain.Entities;
+using FluentAssertions;
+using GoldenRaspberryAwards.Domain.Entities;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
@@ -28,10 +29,10 @@ namespace GoldenRaspberryAwards.IntegrationTests
         {
             await using var application = new GoldenRaspberryAwardsApplication();
 
-            var url = "api/awardintervals";
+            var url = "api/awardsintervals/intervals";
 
             var client = application.CreateClient();
-            
+
             var response = await client.GetAsync(url);
 
             var awardIntervals = await client.GetFromJsonAsync<AwardIntervals>(url);
@@ -42,19 +43,23 @@ namespace GoldenRaspberryAwards.IntegrationTests
 
 
         [Fact]
-        public async Task UploadCsv_WhenValidFile_ReturnsOkStatusCodeAndMoviesList()
+        public async Task ProcessCsvFile_WhenValidFile_Returns_Ok()
         {
-            var response = await UploadCsv();
-
+            //Arrange
+            var response = await UploadCsvFile();
             response.EnsureSuccessStatusCode();
+
+            //Assert
+            var result = await response.Content.ReadAsStringAsync();
+            result.Should().Contain("Upload realizado com sucesso");
             Assert.Equal("application/json; charset=utf-8", response.Content.Headers.ContentType!.ToString());
         }
 
-        private async Task<HttpResponseMessage> UploadCsv()
+        private async Task<HttpResponseMessage> UploadCsvFile()
         {
             await using var application = new GoldenRaspberryAwardsApplication();
 
-            var url = "api/movies";
+            var url = "api/movies/upload";
 
             var client = application.CreateClient();
 

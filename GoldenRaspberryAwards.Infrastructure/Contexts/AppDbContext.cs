@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using GoldenRaspberryAwards.API.Domain.Entities;
+using GoldenRaspberryAwards.Domain.Entities;
 
-namespace GoldenRaspberryAwards.API.Data.Contexts;
+namespace GoldenRaspberryAwards.Infrastructure.Contexts;
 
 public class AppDbContext : DbContext
 {

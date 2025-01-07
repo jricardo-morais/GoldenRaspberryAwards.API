@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using GoldenRaspberryAwards.API.Data.Contexts;
-using GoldenRaspberryAwards.API.Domain.Entities;
+﻿using GoldenRaspberryAwards.Domain.Entities;
+using GoldenRaspberryAwards.Infrastructure.Contexts;
+using Microsoft.EntityFrameworkCore;
 
-namespace GoldenRaspberryAwards.API.Data.Repositories;
+namespace GoldenRaspberryAwards.Infrastructure.Repositories;
 
 public class MovieRepository : IMovieRepository
 {
@@ -45,6 +45,12 @@ public class MovieRepository : IMovieRepository
     public async Task Delete(Movie movie)
     {
         _context.Remove(movie);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteAll(List<Movie> movies)
+    {
+        _context.RemoveRange(movies);
         await _context.SaveChangesAsync();
     }
 }

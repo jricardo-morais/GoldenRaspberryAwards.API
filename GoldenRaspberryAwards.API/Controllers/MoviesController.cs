@@ -1,9 +1,8 @@
-﻿using CsvHelper;
-using GoldenRaspberryAwards.API.Application.Movies;
-using GoldenRaspberryAwards.API.Domain.Entities;
-using GoldenRaspberryAwards.API.Mappings;
+﻿using GoldenRaspberryAwards.Application.Movies;
+using GoldenRaspberryAwards.Domain.Entities;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using System.Globalization;
 
 namespace GoldenRaspberryAwards.API.Controllers;
 
@@ -11,40 +10,42 @@ namespace GoldenRaspberryAwards.API.Controllers;
 [ApiController]
 public class MoviesController : ControllerBase
 {
-    private readonly IMovieService _service;
+    private readonly IMovieService _movieService;
 
     public MoviesController(IMovieService service)
     {
-        _service = service;
+        _movieService = service;
     }
 
+   
     [HttpGet]
+    [ProducesResponseType(typeof(IEnumerable<Movie>), 200)]
+    [ProducesResponseType(typeof(IEnumerable<Movie>), 500)]
     public async Task<IActionResult> Get()
     {
-        var movies = await _service.GetAll();
+        var movies = await _movieService.GetAll();
         return Ok(movies);
     }
 
-    [HttpPost]
-    public IActionResult UploadCsv(IFormFile file)
+   
+    [HttpPost("Upload")]
+    [ProducesResponseType(typeof(object), 200)]
+    [ProducesResponseType(typeof(string), 400)]
+    [ProducesResponseType(typeof(string), 500)]
+    public async Task<IActionResult> UploadMovieFile([FromForm] FormFileUpload formFile)
     {
-        var movies = new List<Movie>();
-        var configuration = new CsvHelper.Configuration.CsvConfiguration(CultureInfo.InvariantCulture)
+        try
         {
-            Delimiter = ";",
-            HeaderValidated = null, 
-            MissingFieldFound = null
-        };
-
-        using (var reader = new StreamReader(file.OpenReadStream()))
-        using (var csv = new CsvReader(reader, configuration))
-        {
-            csv.Context.RegisterClassMap<MovieMap>();
-            movies = csv.GetRecords<Movie>().ToList();
-            foreach (var movie in movies)
-                _service.Insert(movie);
+            var result = await _movieService.UploadMovieFile(formFile.File);
+            return Ok(new { Message = "Upload realizado com sucesso.", MoviesCount = result });
         }
-
-        return Ok(movies);
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Erro ao processar arquivo: {ex.Message}");
+        }
     }
 }

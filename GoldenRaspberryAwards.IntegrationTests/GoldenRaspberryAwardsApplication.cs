@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc.Testing;
+﻿using GoldenRaspberryAwards.Infrastructure.Contexts;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using GoldenRaspberryAwards.API.Data.Contexts;
+using System;
 
 
 namespace GoldenRaspberryAwards.IntegrationTests;

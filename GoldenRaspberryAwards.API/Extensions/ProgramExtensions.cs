@@ -1,10 +1,12 @@
-﻿using GoldenRaspberryAwards.API.Application.Awards;
-using GoldenRaspberryAwards.API.Application.Movies;
+﻿using GoldenRaspberryAwards.API.Application.Movies;
+using GoldenRaspberryAwards.API.Configuration;
+using GoldenRaspberryAwards.Application.Awards;
+using GoldenRaspberryAwards.Application.DataSeed;
+using GoldenRaspberryAwards.Application.Movies;
+using GoldenRaspberryAwards.Infrastructure.Contexts;
+using GoldenRaspberryAwards.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using GoldenRaspberryAwards.API.Data.Contexts;
-using GoldenRaspberryAwards.API.Data.Repositories;
-using GoldenRaspberryAwards.API.Application.DataSeed;
 
 namespace GoldenRaspberryAwards.API.Extensions;
 
@@ -15,7 +17,7 @@ public static class ProgramExtensions
         services.AddControllers();
         
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
+        services.AddSwaggerGen(SwaggerConfiguration.ConfigureSwaggerGen);
 
         var root = new InMemoryDatabaseRoot();
 
@@ -32,6 +34,8 @@ public static class ProgramExtensions
         return services;
     }
 
+
+
     public static WebApplication ConfigureWebApplication(this WebApplication app)
     {
         if (app.Environment.IsDevelopment())
@@ -45,14 +49,12 @@ public static class ProgramExtensions
         {
             var services = scope.ServiceProvider;
             var seeder = services.GetRequiredService<DataSeederService>();
-            seeder.Seed(@"Data\movieslist.csv");
+            seeder.Seed(@"DataSeed\movieslist.csv");
 
         }
 
         app.UseHttpsRedirection();
-
         app.UseAuthorization();
-
         app.MapControllers();
         return app;
     }
